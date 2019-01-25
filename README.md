@@ -7,7 +7,7 @@ This Terraform module creates the base networking infrastructure.
 ### Usage
  
 	module "networking" {
-		source = "github.com/jnonino/networking-terraform-module//aws"
+		source = "github.com/jnonino/networking-terraform-module//aws?ref=1.0.0"
         name_preffix    = "base"
         profile         = "aws_profile"
         region          = "us-east-1"
@@ -27,3 +27,7 @@ This Terraform module creates the base networking infrastructure.
 * nat_gw_ids: IDs of the NAT gateways created on public subnets to provide internet to private subnets.
 * private_subnets_ids: IDs of generated private subnets.
 * private_subnets_route_table_id: ID of the route table associated with private subnets.
+
+### Current versions
+
+* 1.0.0
