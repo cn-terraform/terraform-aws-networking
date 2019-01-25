@@ -11,7 +11,7 @@ This Terraform module creates the base networking infrastructure.
         name_preffix    = "base"
         profile         = "aws_profile"
         region          = "us-east-1"
-        vpc_cidr        = "10.0.0.0/8"
+        vpc_cidr_block  = "10.0.0.0/8"
         availability_zones                          = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" ]
         public_subnets_cidrs_per_availability_zone  = [ "10.0.0.0/11", "10.32.0.0/11", "10.64.0.0/11", "10.96.0.0/11" ]
         private_subnets_cidrs_per_availability_zone = [ "10.128.0.0/11", "10.160.0.0/11", "10.192.0.0/11", "10.224.0.0/11" ]
