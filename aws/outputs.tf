@@ -23,7 +23,10 @@ output "internet_gateway_id" {
 output "public_subnets_ids" {
   value = [ "${aws_subnet.public_subnets.*.id}"]
 }
-output "nat_gw" {
+output "public_subnets_route_table_id" {
+  value = "${aws_route_table.public_subnets_route_table.id}"
+}
+output "nat_gw_ids" {
   value = "${aws_nat_gateway.nat_gw.*.id}"
 }
 
@@ -32,4 +35,7 @@ output "nat_gw" {
 # ---------------------------------------------------------------------------------------------------------------------
 output "private_subnets_ids" {
   value = ["${aws_subnet.private_subnets.*.id}"]
+}
+output "private_subnets_route_table_id" {
+  value = "${aws_route_table.private_subnets_route_table.id}"
 }
