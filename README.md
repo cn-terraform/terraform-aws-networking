@@ -7,7 +7,7 @@ This Terraform module creates the base networking infrastructure.
 ### Usage
  
 	module "networking" {
-		source = "github.com/jnonino/networking-terraform-module//aws?ref=1.0.0"
+		source = "github.com/jnonino/terraform-aws-networking?ref=1.0.0"
         name_preffix    = "base"
         profile         = "aws_profile"
         region          = "us-east-1"
