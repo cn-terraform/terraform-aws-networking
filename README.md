@@ -1,23 +1,21 @@
-# Networking Terraform Module #
+# Networking Terraform Module for AWS #
 
-This Terraform module creates the base networking infrastructure.
+This Terraform module creates the base networking infrastructure on AWS.
 
-## Amazon Web Services
-
-### Usage
+## Usage
  
 	module "networking" {
 		source = "github.com/jnonino/terraform-aws-networking?ref=1.0.0"
-        name_preffix    = "base"
-        profile         = "aws_profile"
-        region          = "us-east-1"
-        vpc_cidr_block  = "192.168.0.0/16"
-        availability_zones                          = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" ]
-        public_subnets_cidrs_per_availability_zone  = [ "192.168.0.0/19", "192.168.32.0/19", "192.168.64.0/19", "192.168.96.0/19" ]
-        private_subnets_cidrs_per_availability_zone = [ "192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19" ]
+        	name_preffix    = "base"
+        	profile         = "aws_profile"
+        	region          = "us-east-1"
+        	vpc_cidr_block  = "192.168.0.0/16"
+        	availability_zones                          = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" ]
+        	public_subnets_cidrs_per_availability_zone  = [ "192.168.0.0/19", "192.168.32.0/19", "192.168.64.0/19", "192.168.96.0/19" ]
+        	private_subnets_cidrs_per_availability_zone = [ "192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19" ]
 	}
 
-### Output values
+## Output values
 
 * vpc_id: The ID of the VPC.
 * vpc_cidr_block: The CIDR block of the VPC.
