@@ -23,7 +23,7 @@ output "internet_gateway_id" {
 # ---------------------------------------------------------------------------------------------------------------------
 output "public_subnets_ids" {
     description = "List with the Public Subnets IDs"
-    value = [ "${aws_subnet.public_subnets.*.id}"]
+    value = [ "${aws_subnet.public_subnets.*.id}" ]
 }
 output "public_subnets_route_table_id" {
     description = "ID of the Route Table used on Public networks"
@@ -39,7 +39,7 @@ output "nat_gw_ids" {
 # ---------------------------------------------------------------------------------------------------------------------
 output "private_subnets_ids" {
     description = "List with the Private Subnets IDs"
-    value = ["${aws_subnet.private_subnets.*.id}"]
+    value = [ "${aws_subnet.private_subnets.*.id}" ]
 }
 output "private_subnets_route_table_id" {
     description = "ID of the Route Table used on Private networks"
