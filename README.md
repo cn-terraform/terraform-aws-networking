@@ -3,7 +3,11 @@
 This Terraform module creates the base networking infrastructure on AWS.
 
 ## Usage
- 
+
+Check valid versions on:
+* Github Releases: <https://github.com/jnonino/terraform-aws-networking/releases>
+* Terraform Module Registry: <https://registry.terraform.io/modules/jnonino/networking/aws>
+
 	module "networking" {
 		source          = "jnonino/networking/aws"
         version         = "1.0.0"
