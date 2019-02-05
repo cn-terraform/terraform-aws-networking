@@ -5,8 +5,8 @@ This Terraform module creates the base networking infrastructure on AWS.
 ## Usage
  
 	module "networking" {
-		source = "jnonino/networking/aws"
-        
+		source          = "jnonino/networking/aws"
+        version         = "1.0.0"
         name_preffix    = "base"
         profile         = "aws_profile"
         region          = "us-east-1"
