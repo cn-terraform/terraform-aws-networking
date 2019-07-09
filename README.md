@@ -2,6 +2,8 @@
 
 This Terraform module creates the base networking infrastructure on AWS.
 
+[![CircleCI](https://circleci.com/gh/jnonino/terraform-aws-networking/tree/master.svg?style=svg)](https://circleci.com/gh/jnonino/terraform-aws-networking/tree/master)
+
 ## Usage
 
 Check valid versions on:
