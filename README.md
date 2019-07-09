@@ -10,17 +10,17 @@ Check valid versions on:
 * Github Releases: <https://github.com/jnonino/terraform-aws-networking/releases>
 * Terraform Module Registry: <https://registry.terraform.io/modules/jnonino/networking/aws>
 
-	module "networking" {
-		source          = "jnonino/networking/aws"
-        version         = "1.0.0"
-        name_preffix    = "base"
-        profile         = "aws_profile"
-        region          = "us-east-1"
-        vpc_cidr_block  = "192.168.0.0/16"
-        availability_zones                          = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" ]
-        public_subnets_cidrs_per_availability_zone  = [ "192.168.0.0/19", "192.168.32.0/19", "192.168.64.0/19", "192.168.96.0/19" ]
-        private_subnets_cidrs_per_availability_zone = [ "192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19" ]
-	}
+    	module "networking" {
+    		source          = "jnonino/networking/aws"
+            version         = "1.0.0"
+            name_preffix    = "base"
+            profile         = "aws_profile"
+            region          = "us-east-1"
+            vpc_cidr_block  = "192.168.0.0/16"
+            availability_zones                          = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" ]
+            public_subnets_cidrs_per_availability_zone  = [ "192.168.0.0/19", "192.168.32.0/19", "192.168.64.0/19", "192.168.96.0/19" ]
+            private_subnets_cidrs_per_availability_zone = [ "192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19" ]
+    	}
 
 ## Output values
 
