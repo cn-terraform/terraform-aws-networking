@@ -28,8 +28,8 @@ output "public_subnets_ids" {
 }
 
 output "public_subnets_route_table_id" {
-  description = "ID of the Route Table used on Public networks"
-  value       = aws_route_table.public_subnets_route_table.id
+  description = "ID of the Route Tables used on Public networks"
+  value       = aws_route_table.public_subnets_route_table.*.id
 }
 
 output "nat_gw_ids" {
@@ -47,6 +47,6 @@ output "private_subnets_ids" {
 
 output "private_subnets_route_table_id" {
   description = "ID of the Route Table used on Private networks"
-  value       = aws_route_table.private_subnets_route_table.id
+  value       = aws_route_table.private_subnets_route_table.*.id
 }
 

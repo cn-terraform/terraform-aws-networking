@@ -35,6 +35,7 @@ resource "aws_nat_gateway" "nat_gw" {
 
 # Public route table
 resource "aws_route_table" "public_subnets_route_table" {
+  count  = length(var.availability_zones)
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "${var.name_preffix}-public-rt-${element(var.availability_zones, count.index)}"
@@ -43,11 +44,12 @@ resource "aws_route_table" "public_subnets_route_table" {
 
 # Public route to access internet
 resource "aws_route" "public_internet_route" {
+  count      = length(var.availability_zones)
   depends_on = [
     aws_internet_gateway.internet_gw,
     aws_route_table.public_subnets_route_table,
   ]
-  route_table_id         = aws_route_table.public_subnets_route_table.id
+  route_table_id         = element(aws_route_table.public_subnets_route_table.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.internet_gw.id
 }
@@ -76,6 +78,7 @@ resource "aws_subnet" "private_subnets" {
 
 # Private route table
 resource "aws_route_table" "private_subnets_route_table" {
+  count  = length(var.availability_zones)
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "${var.name_preffix}-private-rt-${element(var.availability_zones, count.index)}"
@@ -84,11 +87,12 @@ resource "aws_route_table" "private_subnets_route_table" {
 
 # Private route to access internet
 resource "aws_route" "private_internet_route" {
+  count      = length(var.availability_zones)
   depends_on = [
     aws_internet_gateway.internet_gw,
     aws_route_table.private_subnets_route_table,
   ]
-  route_table_id         = aws_route_table.private_subnets_route_table.id
+  route_table_id         = element(aws_route_table.private_subnets_route_table.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = element(aws_nat_gateway.nat_gw.*.id, count.index)
 }
