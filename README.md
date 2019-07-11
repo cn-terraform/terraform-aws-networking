@@ -12,7 +12,7 @@ Check valid versions on:
 
     	module "networking" {
     		source          = "jnonino/networking/aws"
-            version         = "2.0.2"
+            version         = "2.0.3"
             name_preffix    = "base"
             profile         = "aws_profile"
             region          = "us-east-1"
