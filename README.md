@@ -3,6 +3,11 @@
 This Terraform module creates the base networking infrastructure on AWS.
 
 [![CircleCI](https://circleci.com/gh/jnonino/terraform-aws-networking/tree/master.svg?style=svg)](https://circleci.com/gh/jnonino/terraform-aws-networking/tree/master)
+[![](https://img.shields.io/github/license/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
+[![](https://img.shields.io/github/issues/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
+[![](https://img.shields.io/github/issues-closed/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
+[![](https://img.shields.io/github/languages/code-size/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
+[![](https://img.shields.io/github/repo-size/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
 
 ## Usage
 
