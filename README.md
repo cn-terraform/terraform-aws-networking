@@ -16,7 +16,7 @@ Check valid versions on:
 * Terraform Module Registry: <https://registry.terraform.io/modules/cn-terraform/networking/aws>
 
     	module "networking" {
-    		source          = "cn-terraform/networking/aws"
+            source          = "cn-terraform/networking/aws"
             version         = "2.0.3"
             name_preffix    = "base"
             profile         = "aws_profile"
