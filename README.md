@@ -2,21 +2,21 @@
 
 This Terraform module creates the base networking infrastructure on AWS.
 
-[![CircleCI](https://circleci.com/gh/jnonino/terraform-aws-networking/tree/master.svg?style=svg)](https://circleci.com/gh/jnonino/terraform-aws-networking/tree/master)
-[![](https://img.shields.io/github/license/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
-[![](https://img.shields.io/github/issues/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
-[![](https://img.shields.io/github/issues-closed/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
-[![](https://img.shields.io/github/languages/code-size/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
-[![](https://img.shields.io/github/repo-size/jnonino/terraform-aws-networking)](https://github.com/jnonino/terraform-aws-networking)
+[![CircleCI](https://circleci.com/gh/cn-terraform/terraform-aws-networking/tree/master.svg?style=svg)](https://circleci.com/gh/cn-terraform/terraform-aws-networking/tree/master)
+[![](https://img.shields.io/github/license/cn-terraform/terraform-aws-networking)](https://github.com/cn-terraform/terraform-aws-networking)
+[![](https://img.shields.io/github/issues/cn-terraform/terraform-aws-networking)](https://github.com/cn-terraform/terraform-aws-networking)
+[![](https://img.shields.io/github/issues-closed/cn-terraform/terraform-aws-networking)](https://github.com/cn-terraform/terraform-aws-networking)
+[![](https://img.shields.io/github/languages/code-size/cn-terraform/terraform-aws-networking)](https://github.com/cn-terraform/terraform-aws-networking)
+[![](https://img.shields.io/github/repo-size/cn-terraform/terraform-aws-networking)](https://github.com/cn-terraform/terraform-aws-networking)
 
 ## Usage
 
 Check valid versions on:
-* Github Releases: <https://github.com/jnonino/terraform-aws-networking/releases>
-* Terraform Module Registry: <https://registry.terraform.io/modules/jnonino/networking/aws>
+* Github Releases: <https://github.com/cn-terraform/terraform-aws-networking/releases>
+* Terraform Module Registry: <https://registry.terraform.io/modules/cn-terraform/networking/aws>
 
     	module "networking" {
-    		source          = "jnonino/networking/aws"
+    		source          = "cn-terraform/networking/aws"
             version         = "2.0.3"
             name_preffix    = "base"
             profile         = "aws_profile"
