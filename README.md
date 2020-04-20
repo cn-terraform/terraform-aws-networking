@@ -17,7 +17,7 @@ Check valid versions on:
 
     	module "networking" {
             source          = "cn-terraform/networking/aws"
-            version         = "2.0.3"
+            version         = "2.0.5"
             name_preffix    = "base"
             profile         = "aws_profile"
             region          = "us-east-1"
