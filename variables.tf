@@ -6,22 +6,6 @@ variable "name_preffix" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# AWS CREDENTIALS AND REGION
-# ---------------------------------------------------------------------------------------------------------------------
-variable "profile" {
-  description = "AWS API key credentials to use"
-}
-
-variable "region" {
-  description = "AWS Region the infrastructure is hosted in"
-}
-
-variable "availability_zones" {
-  type        = list
-  description = "List of availability zones to be used by subnets"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # AWS Virtual Private Network
 # ---------------------------------------------------------------------------------------------------------------------
 variable "vpc_cidr_block" {
@@ -31,6 +15,11 @@ variable "vpc_cidr_block" {
 # ---------------------------------------------------------------------------------------------------------------------
 # AWS Subnets
 # ---------------------------------------------------------------------------------------------------------------------
+variable "availability_zones" {
+  type        = list
+  description = "List of availability zones to be used by subnets"
+}
+
 variable "public_subnets_cidrs_per_availability_zone" {
   type        = list
   description = "List of CIDRs to use on each availability zone for public subnets"
@@ -40,4 +29,3 @@ variable "private_subnets_cidrs_per_availability_zone" {
   type        = list
   description = "List of CIDRs to use on each availability zone for private subnets"
 }
-
