@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-module "cluster" {
+module "base-network" {
   source                                      = "../../"
   name_preffix                                = "base"
   vpc_cidr_block                              = "192.168.0.0/16"
