@@ -4,9 +4,9 @@ provider "aws" {
 
 module "cluster" {
   source                                      = "../../"
-  name_preffix                                = var.name_preffix
-  vpc_cidr_block                              = var.vpc_cidr_block
-  availability_zones                          = var.availability_zones
-  public_subnets_cidrs_per_availability_zone  = var.public_subnets_cidrs_per_availability_zone
-  private_subnets_cidrs_per_availability_zone = var.private_subnets_cidrs_per_availability_zone
+  name_preffix                                = "base"
+  vpc_cidr_block                              = "192.168.0.0/16"
+  availability_zones                          = [ "us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d" ]
+  public_subnets_cidrs_per_availability_zone  = [ "192.168.0.0/19", "192.168.32.0/19", "192.168.64.0/19", "192.168.96.0/19" ]
+  private_subnets_cidrs_per_availability_zone = [ "192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19" ]
 }
