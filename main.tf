@@ -66,7 +66,7 @@ resource "aws_route_table" "public_subnets_route_table" {
 
 # Public route to access internet
 resource "aws_route" "public_internet_route" {
-  count      = length(var.availability_zones)
+  count = length(var.availability_zones)
   depends_on = [
     aws_internet_gateway.internet_gw,
     aws_route_table.public_subnets_route_table,
@@ -109,7 +109,7 @@ resource "aws_route_table" "private_subnets_route_table" {
 
 # Private route to access internet
 resource "aws_route" "private_internet_route" {
-  count      = length(var.availability_zones)
+  count = length(var.availability_zones)
   depends_on = [
     aws_internet_gateway.internet_gw,
     aws_route_table.private_subnets_route_table,
