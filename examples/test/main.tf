@@ -1,6 +1,5 @@
 provider "aws" {
-  region  = "us-east-1"
-  profile = "gdn-lab"
+  region = "us-east-1"
 }
 
 module "base-network" {
