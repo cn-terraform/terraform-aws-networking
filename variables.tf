@@ -1,8 +1,8 @@
 #------------------------------------------------------------------------------
 # Misc
 #------------------------------------------------------------------------------
-variable "name_preffix" {
-  description = "Name preffix for resources on AWS"
+variable "name_prefix" {
+  description = "Name prefix for resources on AWS"
 }
 
 #------------------------------------------------------------------------------
@@ -28,4 +28,10 @@ variable "public_subnets_cidrs_per_availability_zone" {
 variable "private_subnets_cidrs_per_availability_zone" {
   type        = list
   description = "List of CIDRs to use on each availability zone for private subnets"
+}
+
+variable "single_nat" {
+  type        = bool
+  default     = false
+  description = "enable single NAT Gateway"
 }
