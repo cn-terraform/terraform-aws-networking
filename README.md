@@ -14,3 +14,7 @@ This Terraform module creates the base networking infrastructure on AWS.
 Check valid versions on:
 * Github Releases: <https://github.com/cn-terraform/terraform-aws-networking/releases>
 * Terraform Module Registry: <https://registry.terraform.io/modules/cn-terraform/networking/aws>
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
