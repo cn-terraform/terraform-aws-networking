@@ -4,7 +4,7 @@ provider "aws" {
 
 module "base-network" {
   source         = "../../"
-  name_prefix    = "mhmd-test"
+  name_prefix    = "test"
   single_nat     = true
   vpc_cidr_block = "192.168.0.0/16"
   availability_zones = [
