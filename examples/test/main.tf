@@ -7,6 +7,7 @@ module "base-network" {
   name_prefix    = "test"
   single_nat     = true
   vpc_cidr_block = "192.168.0.0/16"
+
   availability_zones = [
     "us-east-1a",
     "us-east-1b"
@@ -19,4 +20,5 @@ module "base-network" {
     "192.168.128.0/19",
     "192.168.160.0/19"
   ]
+
 }
