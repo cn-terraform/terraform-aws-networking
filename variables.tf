@@ -29,3 +29,9 @@ variable "private_subnets_cidrs_per_availability_zone" {
   type        = list
   description = "List of CIDRs to use on each availability zone for private subnets"
 }
+
+variable "single_nat" {
+  type        = bool
+  default     = false
+  description = "enable single NAT Gateway"
+}

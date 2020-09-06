@@ -2,9 +2,12 @@
 # AWS Virtual Private Network
 #------------------------------------------------------------------------------
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr_block # The CIDR block for the VPC.
-  enable_dns_support   = true               # A boolean flag to enable/disable DNS support in the VPC.
-  enable_dns_hostnames = true               # A boolean flag to enable/disable DNS hostnames in the VPC.
+  cidr_block = var.vpc_cidr_block
+  # The CIDR block for the VPC.
+  enable_dns_support = true
+  # A boolean flag to enable/disable DNS support in the VPC.
+  enable_dns_hostnames = true
+  # A boolean flag to enable/disable DNS hostnames in the VPC.
   tags = {
     Name = "${var.name_prefix}-vpc"
   }
@@ -37,7 +40,7 @@ resource "aws_subnet" "public_subnets" {
 
 # Elastic IPs for NAT
 resource "aws_eip" "nat_eip" {
-  count = length(var.availability_zones)
+  count = var.single_nat ? 1 : length(var.availability_zones)
   vpc   = true
   tags = {
     Name = "${var.name_prefix}-nat-eip-${element(var.availability_zones, count.index)}"
@@ -46,13 +49,17 @@ resource "aws_eip" "nat_eip" {
 
 # NAT Gateways
 resource "aws_nat_gateway" "nat_gw" {
-  count         = length(var.availability_zones)
-  depends_on    = [aws_internet_gateway.internet_gw]
-  allocation_id = element(aws_eip.nat_eip.*.id, count.index)
-  subnet_id     = element(aws_subnet.public_subnets.*.id, count.index)
+  count         = var.single_nat ? 1 : length(var.availability_zones)
+  allocation_id = var.single_nat ? aws_eip.nat_eip.0.id : element(aws_eip.nat_eip.*.id, count.index)
+  subnet_id     = var.single_nat ? aws_subnet.public_subnets.0.id : element(aws_subnet.public_subnets.*.id, count.index)
+
   tags = {
     Name = "${var.name_prefix}-nat-gw-${element(var.availability_zones, count.index)}"
   }
+
+  depends_on = [
+    aws_internet_gateway.internet_gw
+  ]
 }
 
 # Public route table
@@ -116,7 +123,7 @@ resource "aws_route" "private_internet_route" {
   ]
   route_table_id         = element(aws_route_table.private_subnets_route_table.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.nat_gw.*.id, count.index)
+  nat_gateway_id         = var.single_nat ? aws_nat_gateway.nat_gw.0.id : element(aws_nat_gateway.nat_gw.*.id, count.index)
 }
 
 # Association of Route Table to Subnets
