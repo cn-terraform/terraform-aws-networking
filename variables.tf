@@ -35,3 +35,9 @@ variable "single_nat" {
   default     = false
   description = "enable single NAT Gateway"
 }
+
+variable "additional_tags" {
+  default     = {}
+  description = "Additional resource tags"
+  type        = map(string)
+}
