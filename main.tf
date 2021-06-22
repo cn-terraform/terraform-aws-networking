@@ -8,12 +8,12 @@ resource "aws_vpc" "vpc" {
   # A boolean flag to enable/disable DNS support in the VPC.
   enable_dns_hostnames = true
   # A boolean flag to enable/disable DNS hostnames in the VPC.
-   tags = merge(
-      var.additional_tags,
-      {
-        Name = "${var.name_prefix}-vpc"
-      },
-    )
+  tags = merge(
+    var.additional_tags,
+    {
+      Name = "${var.name_prefix}-vpc"
+    },
+  )
 
 }
 
@@ -22,12 +22,12 @@ resource "aws_vpc" "vpc" {
 #------------------------------------------------------------------------------
 resource "aws_internet_gateway" "internet_gw" {
   vpc_id = aws_vpc.vpc.id
-    tags = merge(
-      var.additional_tags,
-      {
-        Name = "${var.name_prefix}-internet-gw"
-      },
-    )
+  tags = merge(
+    var.additional_tags,
+    {
+      Name = "${var.name_prefix}-internet-gw"
+    },
+  )
 }
 
 #------------------------------------------------------------------------------
@@ -40,12 +40,12 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = element(var.availability_zones, count.index)
   cidr_block              = element(var.public_subnets_cidrs_per_availability_zone, count.index)
   map_public_ip_on_launch = true
-    tags = merge(
-      var.additional_tags,
-      {
-        Name = "${var.name_prefix}-public-net-${element(var.availability_zones, count.index)}"
-      },
-   )
+  tags = merge(
+    var.additional_tags,
+    {
+      Name = "${var.name_prefix}-public-net-${element(var.availability_zones, count.index)}"
+    },
+  )
 }
 
 # Elastic IPs for NAT
@@ -67,10 +67,10 @@ resource "aws_nat_gateway" "nat_gw" {
   subnet_id     = var.single_nat ? aws_subnet.public_subnets.0.id : element(aws_subnet.public_subnets.*.id, count.index)
 
   tags = merge(
-      var.additional_tags,
-      {
-        Name = "${var.name_prefix}-nat-gw-${element(var.availability_zones, count.index)}"
-      },
+    var.additional_tags,
+    {
+      Name = "${var.name_prefix}-nat-gw-${element(var.availability_zones, count.index)}"
+    },
   )
 
   depends_on = [
