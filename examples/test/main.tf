@@ -17,4 +17,8 @@ module "base-network" {
     "192.168.160.0/19"
   ]
 
+  additional_tags = {
+    tag1 = "tag1",
+    tag2 = "tag2",
+  }
 }
