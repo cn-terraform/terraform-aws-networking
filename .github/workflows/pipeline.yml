@@ -28,7 +28,7 @@ jobs:
     container: hashicorp/terraform
     strategy:
       matrix: {
-        dir: ['examples/basic-usage', 'cidr-from-aws-ipam']
+        dir: ['examples/basic-usage', 'examples/cidr-from-aws-ipam']
       }
     services:
       localstack:
