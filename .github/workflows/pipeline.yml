@@ -49,10 +49,9 @@ jobs:
       - name: Terraform Plan (Mock)
         run: terraform plan
         working-directory: ${{ matrix.dir }}
-      - name: Run infracost diff
-        uses: infracost/infracost-gh-action@master
-        env:
-          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v2
         with:
-          path: ${{ matrix.dir }}
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+      - name: Generate Infracost cost estimate
+        run: infracost breakdown --path ${{ matrix.dir }}
