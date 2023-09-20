@@ -25,30 +25,6 @@ variable "ipv4_netmask_length" {
   default     = null
 }
 
-variable "ipv6_cidr_block" {
-  type        = string
-  description = "(Optional) IPv6 CIDR block to request from an IPAM Pool. Can be set explicitly or derived from IPAM using ipv6_netmask_length."
-  default     = null
-}
-
-variable "ipv6_ipam_pool_id" {
-  type        = string
-  description = "(Optional) IPAM Pool ID for a IPv6 pool. Conflicts with assign_generated_ipv6_cidr_block."
-  default     = null
-}
-
-variable "ipv6_netmask_length" {
-  type        = number
-  description = "(Optional) Netmask length to request from IPAM Pool. Conflicts with ipv6_cidr_block. This can be omitted if IPAM pool as a allocation_default_netmask_length set. Valid values: 56."
-  default     = null
-}
-
-variable "ipv6_cidr_block_network_border_group" {
-  type        = string
-  description = "(Optional) By default when an IPv6 CIDR is assigned to a VPC a default ipv6_cidr_block_network_border_group will be set to the region of the VPC. This can be changed to restrict advertisement of public addresses to specific Network Border Groups such as LocalZones."
-  default     = null
-}
-
 variable "enable_dns_support" {
   type        = bool
   description = "(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults to true."
@@ -67,44 +43,87 @@ variable "enable_dns_hostnames" {
   default     = false
 }
 
-variable "assign_generated_ipv6_cidr_block" {
-  type        = bool
-  description = "(Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false. Conflicts with ipv6_ipam_pool_id"
-  default     = false
-}
-
 variable "vpc_additional_tags" {
   type        = map(string)
   description = "(Optional) A map of tags to assign to the VPC resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
   default     = {}
 }
 
-# #------------------------------------------------------------------------------
-# # AWS Subnets
-# #------------------------------------------------------------------------------
-# variable "availability_zones" {
-#   type        = list(any)
-#   description = "List of availability zones to be used by subnets"
-# }
+#------------------------------------------------------------------------------
+# Public Subnets
+#------------------------------------------------------------------------------
+variable "public_subnets" {
+  type = map(object({
+    availability_zone = string # Availability Zone for the subnet.
+    cidr_block        = string # The IPv4 CIDR block for the subnet.
+  }))
+  description = "(Optional) Map of objects contining the definition for each public subnet"
+  default     = {}
+}
 
-# variable "public_subnets_cidrs_per_availability_zone" {
-#   type        = list(any)
-#   description = "List of CIDRs to use on each availability zone for public subnets"
-# }
+variable "public_subnets_enable_resource_name_dns_aaaa_record_on_launch" {
+  type        = bool
+  description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records. Default: false."
+  default     = false
+}
 
-# variable "private_subnets_cidrs_per_availability_zone" {
-#   type        = list(any)
-#   description = "List of CIDRs to use on each availability zone for private subnets"
-# }
+variable "public_subnets_enable_resource_name_dns_a_record_on_launch" {
+  type        = bool
+  description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS A records. Default: false."
+  default     = false
+}
 
-# variable "single_nat" {
-#   type        = bool
-#   default     = false
-#   description = "enable single NAT Gateway"
-# }
+variable "map_public_ip_on_launch" {
+  type        = bool
+  description = "(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false."
+  default     = false
+}
 
-# variable "additional_tags" {
-#   default     = {}
-#   description = "Additional resource tags"
-#   type        = map(string)
-# }
+variable "public_subnets_additional_tags" {
+  type        = map(string)
+  description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  default     = {}
+}
+
+variable "single_nat" {
+  type        = bool
+  description = "Use single NAT Gateway"
+  default     = false
+}
+
+#------------------------------------------------------------------------------
+# Private Subnets
+#------------------------------------------------------------------------------
+variable "private_subnets" {
+  type = map(object({
+    availability_zone = string # Availability Zone for the subnet.
+    cidr_block        = string # The IPv4 CIDR block for the subnet.
+  }))
+  description = "(Optional) Map of objects contining the definition for each private subnet"
+  default     = {}
+}
+
+variable "private_subnets_enable_resource_name_dns_aaaa_record_on_launch" {
+  type        = bool
+  description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records. Default: false."
+  default     = false
+}
+
+variable "private_subnets_enable_resource_name_dns_a_record_on_launch" {
+  type        = bool
+  description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS A records. Default: false."
+  default     = false
+}
+
+variable "private_subnets_additional_tags" {
+  type        = map(string)
+  description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  default     = {}
+}
+
+
+variable "additional_tags" {
+  type        = map(string)
+  description = "(Optional) A map of tags to assign to all the resources. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  default     = {}
+}
