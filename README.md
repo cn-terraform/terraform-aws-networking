@@ -92,18 +92,24 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_arn"></a> [arn](#output\_arn) | Amazon Resource Name (ARN) of VPC |
-| <a name="output_default_network_acl_id"></a> [default\_network\_acl\_id](#output\_default\_network\_acl\_id) | The ID of the network ACL created by default on VPC creation |
-| <a name="output_default_route_table_id"></a> [default\_route\_table\_id](#output\_default\_route\_table\_id) | The ID of the route table created by default on VPC creation |
-| <a name="output_default_security_group_id"></a> [default\_security\_group\_id](#output\_default\_security\_group\_id) | The ID of the security group created by default on VPC creation |
-| <a name="output_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#output\_enable\_dns\_hostnames) | Whether or not the VPC has DNS hostname support |
-| <a name="output_enable_dns_support"></a> [enable\_dns\_support](#output\_enable\_dns\_support) | Whether or not the VPC has DNS support |
-| <a name="output_enable_network_address_usage_metrics"></a> [enable\_network\_address\_usage\_metrics](#output\_enable\_network\_address\_usage\_metrics) | Whether Network Address Usage metrics are enabled for the VPC |
-| <a name="output_id"></a> [id](#output\_id) | The ID of the VPC |
-| <a name="output_instance_tenancy"></a> [instance\_tenancy](#output\_instance\_tenancy) | Tenancy of instances spin up within VPC |
-| <a name="output_ipv6_association_id"></a> [ipv6\_association\_id](#output\_ipv6\_association\_id) | The association ID for the IPv6 CIDR block. |
-| <a name="output_ipv6_cidr_block_network_border_group"></a> [ipv6\_cidr\_block\_network\_border\_group](#output\_ipv6\_cidr\_block\_network\_border\_group) | The Network Border Group Zone name |
-| <a name="output_main_route_table_id"></a> [main\_route\_table\_id](#output\_main\_route\_table\_id) | The ID of the main route table associated with this VPC. Note that you can change a VPC's main route table by using an aws\_main\_route\_table\_association. |
-| <a name="output_owner_id"></a> [owner\_id](#output\_owner\_id) | The ID of the AWS account that owns the VPC. |
-| <a name="output_tags_all"></a> [tags\_all](#output\_tags\_all) | A map of tags assigned to the resource, including those inherited from the provider default\_tags configuration block. |
+| <a name="output_internet_gateway_id"></a> [internet\_gateway\_id](#output\_internet\_gateway\_id) | ID of the generated Internet Gateway |
+| <a name="output_nat_gws"></a> [nat\_gws](#output\_nat\_gws) | n/a |
+| <a name="output_private_subnets"></a> [private\_subnets](#output\_private\_subnets) | ------------------------------------------------------------------------------ AWS Subnets - Private ------------------------------------------------------------------------------ |
+| <a name="output_private_subnets_route_tables"></a> [private\_subnets\_route\_tables](#output\_private\_subnets\_route\_tables) | n/a |
+| <a name="output_public_subnets"></a> [public\_subnets](#output\_public\_subnets) | ------------------------------------------------------------------------------ AWS Subnets - Public ------------------------------------------------------------------------------ |
+| <a name="output_public_subnets_route_tables"></a> [public\_subnets\_route\_tables](#output\_public\_subnets\_route\_tables) | n/a |
+| <a name="output_vpc_arn"></a> [vpc\_arn](#output\_vpc\_arn) | Amazon Resource Name (ARN) of VPC |
+| <a name="output_vpc_default_network_acl_id"></a> [vpc\_default\_network\_acl\_id](#output\_vpc\_default\_network\_acl\_id) | The ID of the network ACL created by default on VPC creation |
+| <a name="output_vpc_default_route_table_id"></a> [vpc\_default\_route\_table\_id](#output\_vpc\_default\_route\_table\_id) | The ID of the route table created by default on VPC creation |
+| <a name="output_vpc_default_security_group_id"></a> [vpc\_default\_security\_group\_id](#output\_vpc\_default\_security\_group\_id) | The ID of the security group created by default on VPC creation |
+| <a name="output_vpc_enable_dns_hostnames"></a> [vpc\_enable\_dns\_hostnames](#output\_vpc\_enable\_dns\_hostnames) | Whether or not the VPC has DNS hostname support |
+| <a name="output_vpc_enable_dns_support"></a> [vpc\_enable\_dns\_support](#output\_vpc\_enable\_dns\_support) | Whether or not the VPC has DNS support |
+| <a name="output_vpc_enable_network_address_usage_metrics"></a> [vpc\_enable\_network\_address\_usage\_metrics](#output\_vpc\_enable\_network\_address\_usage\_metrics) | Whether Network Address Usage metrics are enabled for the VPC |
+| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |
+| <a name="output_vpc_instance_tenancy"></a> [vpc\_instance\_tenancy](#output\_vpc\_instance\_tenancy) | Tenancy of instances spin up within VPC |
+| <a name="output_vpc_ipv6_association_id"></a> [vpc\_ipv6\_association\_id](#output\_vpc\_ipv6\_association\_id) | The association ID for the IPv6 CIDR block. |
+| <a name="output_vpc_ipv6_cidr_block_network_border_group"></a> [vpc\_ipv6\_cidr\_block\_network\_border\_group](#output\_vpc\_ipv6\_cidr\_block\_network\_border\_group) | The Network Border Group Zone name |
+| <a name="output_vpc_main_route_table_id"></a> [vpc\_main\_route\_table\_id](#output\_vpc\_main\_route\_table\_id) | The ID of the main route table associated with this VPC. Note that you can change a VPC's main route table by using an aws\_main\_route\_table\_association. |
+| <a name="output_vpc_owner_id"></a> [vpc\_owner\_id](#output\_vpc\_owner\_id) | The ID of the AWS account that owns the VPC. |
+| <a name="output_vpc_tags_all"></a> [vpc\_tags\_all](#output\_vpc\_tags\_all) | A map of tags assigned to the resource, including those inherited from the provider default\_tags configuration block. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
