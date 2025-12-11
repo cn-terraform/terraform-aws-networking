@@ -18,11 +18,14 @@ resource "aws_vpc_ipam_pool_cidr" "test" {
 }
 
 module "base-network" {
-  source              = "../../"
-  ipv4_ipam_pool_id   = aws_vpc_ipam_pool.test.id
-  ipv4_netmask_length = 28
+  source = "../../"
+
+  name_prefix             = "cidr-from-aws-ipam"
+  vpc_ipv4_ipam_pool_id   = aws_vpc_ipam_pool.test.id
+  vpc_ipv4_netmask_length = 28
+
   vpc_additional_tags = {
     tag1 = "tag1",
-    tag2 = "tag2",
+    tag2 = "tag2"
   }
 }

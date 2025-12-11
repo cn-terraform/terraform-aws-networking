@@ -1,7 +1,9 @@
 module "base-network" {
   source = "../../"
 
-  cidr_block = "192.168.0.0/16"
+  name_prefix = "baseic-usage"
+
+  vpc_cidr_block = "192.168.0.0/16"
 
   vpc_additional_tags = {
     vpc_tag1 = "tag1",
