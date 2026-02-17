@@ -1,6 +1,6 @@
-#------------------------------------------------------------------------------
+################
 # Public Subnets
-#------------------------------------------------------------------------------
+################
 resource "aws_subnet" "public" {
   for_each = var.public_subnets
 
@@ -75,7 +75,7 @@ resource "aws_route" "public_internet" {
 
   route_table_id         = each.value.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.internet_gw.id
+  gateway_id             = aws_internet_gateway.internet_gw[0].id
 }
 
 # Association of Route Table to Subnets

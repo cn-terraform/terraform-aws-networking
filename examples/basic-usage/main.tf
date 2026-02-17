@@ -1,3 +1,4 @@
+# trivy:ignore:AWS-0178 (MEDIUM): VPC does not have VPC Flow Logs enabled.
 module "base-network" {
   source = "../../"
 

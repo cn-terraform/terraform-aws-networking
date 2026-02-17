@@ -1,23 +1,35 @@
-#------------------------------------------------------------------------------
+##################
 # General settings
-#------------------------------------------------------------------------------
+##################
 variable "name_prefix" {
   description = "(Required) The prefix to use for naming resources created in this module."
   type        = string
 }
 
-#------------------------------------------------------------------------------
+variable "additional_tags" {
+  description = "(Optional) A map of tags to assign to all the resources. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  type        = map(string)
+  default     = {}
+}
+
+###################################
 # AWS Virtual Private Network (VPC)
-#------------------------------------------------------------------------------
+###################################
 variable "vpc_cidr_block" {
+  description = "(Optional) The IPv4 CIDR block for the VPC. CIDR can be explicitly set or it can be derived from IPAM using ipv4_netmask_length."
   type        = string
-  description = "(Optional) The IPv4 CIDR block for the VPC. CIDR can be explicitly set or it can be derived from IPAM using ipv4_netmask_length"
   default     = null
 }
 
+variable "vpc_assign_generated_ipv6_cidr_block" {
+  description = "(Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false. Conflicts with ipv6_ipam_pool_id"
+  type        = bool
+  default     = false
+}
+
 variable "vpc_instance_tenancy" {
-  type        = string
   description = "(Optional) A tenancy option for instances launched into the VPC. Default is default, which ensures that EC2 instances launched in this VPC use the EC2 instance tenancy attribute specified when the EC2 instance is launched. The only other option is dedicated, which ensures that EC2 instances launched in this VPC are run on dedicated tenancy instances regardless of the tenancy attribute specified at launch. This has a dedicated per region fee of $2 per hour, plus an hourly per instance usage fee."
+  type        = string
   default     = "default"
 
   validation {
@@ -27,32 +39,32 @@ variable "vpc_instance_tenancy" {
 }
 
 variable "vpc_ipv4_ipam_pool_id" {
-  type        = string
   description = "(Optional) The ID of an IPv4 IPAM pool you want to use for allocating this VPC's CIDR. IPAM is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across AWS Regions and accounts. Using IPAM you can monitor IP address usage throughout your AWS Organization."
+  type        = string
   default     = null
 }
 
 variable "vpc_ipv4_netmask_length" {
-  type        = number
   description = "(Optional) The netmask length of the IPv4 CIDR you want to allocate to this VPC. Requires specifying a ipv4_ipam_pool_id."
+  type        = number
   default     = null
 }
 
 variable "vpc_ipv6_cidr_block" {
-  type        = string
   description = "(Optional) IPv6 CIDR block to request from an IPAM Pool. Can be set explicitly or derived from IPAM using ipv6_netmask_length."
+  type        = string
   default     = null
 }
 
 variable "vpc_ipv6_ipam_pool_id" {
-  type        = string
   description = "(Optional) IPAM Pool ID for a IPv6 pool. Conflicts with assign_generated_ipv6_cidr_block."
+  type        = string
   default     = null
 }
 
 variable "vpc_ipv6_netmask_length" {
-  type        = number
   description = "(Optional) Netmask length to request from IPAM Pool. Conflicts with ipv6_cidr_block. This can be omitted if IPAM pool as a allocation_default_netmask_length set. Valid values are from 44 to 60 in increments of 4."
+  type        = number
   default     = null
 }
 
@@ -62,26 +74,20 @@ variable "vpc_ipv6_cidr_block_network_border_group" {
   default     = null
 }
 
-variable "vpc_enable_dns_support" {
+variable "vpc_enable_dns_hostnames" {
+  description = "(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults false."
   type        = bool
+  default     = false
+}
+
+variable "vpc_enable_dns_support" {
   description = "(Optional) A boolean flag to enable/disable DNS support in the VPC. Defaults to true."
+  type        = bool
   default     = true
 }
 
 variable "vpc_enable_network_address_usage_metrics" {
-  type        = bool
   description = "(Optional) Indicates whether Network Address Usage metrics are enabled for your VPC. Defaults to false."
-  default     = false
-}
-
-variable "vpc_enable_dns_hostnames" {
-  type        = bool
-  description = "(Optional) A boolean flag to enable/disable DNS hostnames in the VPC. Defaults false."
-  default     = false
-}
-
-variable "vpc_assign_generated_ipv6_cidr_block" {
-  description = "(Optional) Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false. Conflicts with ipv6_ipam_pool_id"
   type        = bool
   default     = false
 }
@@ -90,6 +96,18 @@ variable "vpc_additional_tags" {
   type        = map(string)
   description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
   default     = {}
+}
+
+variable "vpc_create_internet_gateway" {
+  description = "(Optional) Whether to create an Internet Gateway and attach it to the VPC. Default is true."
+  type        = bool
+  default     = true
+}
+
+variable "vpc_enable_flow_log" {
+  description = "(Optional) Whether to create a flow log for the VPC. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured."
+  type        = bool
+  default     = false
 }
 
 #------------------------------------------------------------------------------
@@ -164,8 +182,91 @@ variable "private_subnets_additional_tags" {
   default     = {}
 }
 
-variable "additional_tags" {
+
+
+
+
+########################
+# Flow Log configuration
+########################
+variable "flow_log_deliver_cross_account_role" {
+  description = "(Optional) ARN of the IAM role in the destination account used for cross-account delivery of flow logs. This is required if log_destination_type is cloud-watch-logs or s3 and the destination is in a different account. Corresponds to DeliverCrossAccountRole in the AWS API."
+  type        = string
+  default     = null
+}
+
+variable "flow_log_iam_role_arn" {
+  description = "(Optional) ARN of the IAM role used to post flow logs. Corresponds to DeliverLogsPermissionArn in the AWS API."
+  type        = string
+  default     = null
+}
+
+variable "flow_log_log_destination_type" {
+  description = "(Optional) Logging destination type. Valid values: cloud-watch-logs, s3, kinesis-data-firehose. Default: cloud-watch-logs."
+  type        = string
+  default     = "cloud-watch-logs"
+
+  validation {
+    condition     = contains(["cloud-watch-logs", "s3", "kinesis-data-firehose"], var.flow_log_log_destination_type)
+    error_message = "The flow_log_log_destination_type variable can only be set to one of ${join(", ", ["cloud-watch-logs", "s3", "kinesis-data-firehose"])}"
+  }
+}
+
+variable "flow_log_log_destination" {
+  description = "(Optional) ARN of the logging destination."
+  type        = string
+  default     = null
+}
+
+variable "flow_log_log_format" {
+  description = "(Optional) The fields to include in the flow log record. Accepted format example: \"$${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport}\"."
+  type        = string
+  default     = null
+}
+
+variable "flow_log_max_aggregation_interval" {
+  description = "(Optional) The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record. Valid Values: 60 seconds (1 minute) or 600 seconds (10 minutes). Default: 600."
+  type        = number
+  default     = 600
+
+  validation {
+    condition     = var.flow_log_max_aggregation_interval == 60 || var.flow_log_max_aggregation_interval == 600
+    error_message = "The flow_log_max_aggregation_interval variable can only be set to 60 or 600 seconds."
+  }
+}
+
+variable "flow_log_traffic_type" {
+  description = "(Optional) The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL. Default: ALL."
+  type        = string
+  default     = "ALL"
+
+  validation {
+    condition     = contains(["ACCEPT", "REJECT", "ALL"], var.flow_log_traffic_type)
+    error_message = "The flow_log_traffic_type variable can only be set to one of ${join(", ", ["ACCEPT", "REJECT", "ALL"])}"
+  }
+}
+
+variable "flow_log_additional_tags" {
+  description = "(Optional) Additional tags to be added to the flow log resources."
   type        = map(string)
-  description = "(Optional) A map of tags to assign to all the resources. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
   default     = {}
+}
+
+variable "flow_log_destination_options" {
+  description = "(Optional) Describes the destination options for a flow log."
+  type = object({
+    file_format                = optional(string, "plain-text") # File format for the flow log. Default value: plain-text. Valid values: plain-text, parquet.
+    hive_compatible_partitions = optional(bool, false)          # Indicates whether to use Hive-compatible prefixes for flow logs stored in Amazon S3. Default value: false.
+    per_hour_partition         = optional(bool, false)          # Indicates whether to partition the flow log per hour. This reduces the cost and response time for queries. Default value: false.
+  })
+  default = {
+    file_format                = "plain-text"
+    hive_compatible_partitions = false
+    per_hour_partition         = false
+  }
+
+  validation {
+    condition     = contains(["plain-text", "parquet"], var.flow_log_destination_options.file_format)
+    error_message = "The flow_log_destination_options.file_format variable can only be set to one of ${join(", ", ["plain-text", "parquet"])}"
+  }
 }
