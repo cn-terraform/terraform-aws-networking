@@ -56,7 +56,6 @@ resource "aws_flow_log" "vpc_flow_log" { # https://registry.terraform.io/provide
   traffic_type               = var.flow_log_traffic_type
   vpc_id                     = aws_vpc.vpc.id
   # regional_nat_gateway_id - (Optional) Regional NAT Gateway ID to attach to.
-  # subnet_id - (Optional) Subnet ID to attach to.
 
   destination_options {
     file_format                = var.flow_log_destination_options.file_format
@@ -66,7 +65,7 @@ resource "aws_flow_log" "vpc_flow_log" { # https://registry.terraform.io/provide
 
   tags = merge(
     {
-      Name = "${var.name_prefix}-vpc-flow-log"
+      Name = format("%s-vpc-flow-log", var.name_prefix)
     },
     var.additional_tags,
     var.flow_log_additional_tags,

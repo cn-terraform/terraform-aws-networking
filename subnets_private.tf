@@ -21,6 +21,36 @@ resource "aws_subnet" "private" {
   )
 }
 
+##########################
+# Private subnets flow log
+##########################
+resource "aws_flow_log" "private_subnet_flow_log" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/flow_log
+  for_each = { for k, v in var.private_subnets : k => v if v.enable_flow_log }
+
+  deliver_cross_account_role = var.flow_log_deliver_cross_account_role
+  iam_role_arn               = var.flow_log_iam_role_arn
+  log_destination_type       = var.flow_log_log_destination_type
+  log_destination            = var.flow_log_log_destination
+  log_format                 = var.flow_log_log_format
+  max_aggregation_interval   = var.flow_log_max_aggregation_interval
+  subnet_id                  = aws_subnet.private[each.key].id
+  traffic_type               = var.flow_log_traffic_type
+
+  destination_options {
+    file_format                = var.flow_log_destination_options.file_format
+    hive_compatible_partitions = var.flow_log_destination_options.hive_compatible_partitions
+    per_hour_partition         = var.flow_log_destination_options.per_hour_partition
+  }
+
+  tags = merge(
+    {
+      Name = format("%s-private-subnet-%s-flow-log", var.name_prefix, each.key)
+    },
+    var.additional_tags,
+    var.flow_log_additional_tags,
+  )
+}
+
 #------------------------------------------------------------------------------
 # Route tables
 #------------------------------------------------------------------------------
@@ -33,7 +63,7 @@ resource "aws_route_table" "private" {
   tags = merge(
     var.additional_tags,
     {
-      Name = "private-rt-${each.key}"
+      Name = format("private-rt-%s", each.key)
     },
   )
 }

@@ -115,8 +115,9 @@ variable "vpc_enable_flow_log" {
 #------------------------------------------------------------------------------
 variable "public_subnets" {
   type = map(object({
-    availability_zone = string # Availability Zone for the subnet.
-    cidr_block        = string # The IPv4 CIDR block for the subnet.
+    availability_zone = string                # Availability Zone for the subnet.
+    cidr_block        = string                # The IPv4 CIDR block for the subnet.
+    enable_flow_log   = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
   }))
   description = "(Optional) Map of objects containing the definition for each public subnet"
   default     = {}
@@ -157,8 +158,9 @@ variable "single_nat" {
 #------------------------------------------------------------------------------
 variable "private_subnets" {
   type = map(object({
-    availability_zone = string # Availability Zone for the subnet.
-    cidr_block        = string # The IPv4 CIDR block for the subnet.
+    availability_zone = string                # Availability Zone for the subnet.
+    cidr_block        = string                # The IPv4 CIDR block for the subnet.
+    enable_flow_log   = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
   }))
   description = "(Optional) Map of objects containing the definition for each private subnet"
   default     = {}
@@ -181,10 +183,6 @@ variable "private_subnets_additional_tags" {
   description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
   default     = {}
 }
-
-
-
-
 
 ########################
 # Flow Log configuration
