@@ -110,77 +110,206 @@ variable "vpc_enable_flow_log" {
   default     = false
 }
 
-#------------------------------------------------------------------------------
+################
 # Public Subnets
-#------------------------------------------------------------------------------
+################
 variable "public_subnets" {
   type = map(object({
-    availability_zone = string                # Availability Zone for the subnet.
-    cidr_block        = string                # The IPv4 CIDR block for the subnet.
-    enable_flow_log   = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
+    availability_zone               = string                # Availability Zone for the subnet.
+    assign_ipv6_address_on_creation = optional(bool, false) # (Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false
+    cidr_block                      = optional(string)      # The IPv4 CIDR block for the subnet.
+    customer_owned_ipv4_pool        = optional(string)      # The customer owned IPv4 address pool. Typically used with the map_customer_owned_ip_on_launch argument. The outpost_arn argument must be specified when configured.
+    enable_flow_log                 = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
+    ipv6_cidr_block                 = optional(string)      # The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length. If the existing IPv6 subnet was created with assign_ipv6_address_on_creation = true, changing this value will force resource recreation.
+    ipv6_native                     = optional(bool, false) # Indicates whether to create an IPv6-only subnet. Default: false.
+    ipv4_ipam_pool_id               = optional(string)      # ID of an IPv4 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv4_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv4_ipam_pool_id.
+    ipv6_ipam_pool_id               = optional(string)      # ID of an IPv6 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv6_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv6_ipam_pool_id. Valid values are from 44 to 64 in increments of 4.
+    map_customer_owned_ip_on_launch = optional(bool, false) # Specify true to indicate that network interfaces created in the subnet should be assigned a customer owned IP address. The customer_owned_ipv4_pool and outpost_arn arguments must be specified when set to true. Default is false.
+    outpost_arn                     = optional(string)      # The Amazon Resource Name (ARN) of the Outpost.
   }))
   description = "(Optional) Map of objects containing the definition for each public subnet"
   default     = {}
+
+  # Every subnet must define IPv4
+  validation {
+    condition = alltrue([
+      for _, s in var.public_subnets : (
+        s.cidr_block != null ||
+        (s.ipv4_ipam_pool_id != null && s.ipv4_netmask_length != null)
+      )
+    ])
+    error_message = "Each public subnet must define either `cidr_block`, or both `ipv4_ipam_pool_id` and `ipv4_netmask_length`."
+  }
+
+  # If IPv6 is used, it must be valid
+  validation {
+    condition = alltrue([
+      for _, s in var.public_subnets : (
+        !(s.assign_ipv6_address_on_creation || s.ipv6_native) ||
+        (
+          s.ipv6_cidr_block != null ||
+          (s.ipv6_ipam_pool_id != null && s.ipv6_netmask_length != null)
+        )
+      )
+    ])
+    error_message = "If IPv6 is requested (`assign_ipv6_address_on_creation` or `ipv6_native`), each subnet must provide either `ipv6_cidr_block`, or both `ipv6_ipam_pool_id` and `ipv6_netmask_length`."
+  }
+
+  # Customer-owned IP mapping dependencies
+  validation {
+    condition = alltrue([
+      for _, s in var.public_subnets : (
+        !s.map_customer_owned_ip_on_launch ||
+        (s.customer_owned_ipv4_pool != null && s.outpost_arn != null)
+      )
+    ])
+    error_message = "If `map_customer_owned_ip_on_launch` is true, then `customer_owned_ipv4_pool` and `outpost_arn` must both be provided."
+  }
+}
+
+variable "public_subnets_enable_dns64" {
+  description = "(Optional) Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations. Default: false."
+  type        = bool
+  default     = false
 }
 
 variable "public_subnets_enable_resource_name_dns_aaaa_record_on_launch" {
-  type        = bool
   description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records. Default: false."
+  type        = bool
   default     = false
 }
 
 variable "public_subnets_enable_resource_name_dns_a_record_on_launch" {
-  type        = bool
   description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS A records. Default: false."
+  type        = bool
   default     = false
 }
 
-variable "map_public_ip_on_launch" {
-  type        = bool
+variable "public_subnets_map_public_ip_on_launch" {
   description = "(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address. Default is false."
+  type        = bool
   default     = false
+}
+
+variable "public_subnets_private_dns_hostname_type_on_launch" {
+  description = "(Optional) The type of hostnames to assign to instances in the subnet at launch. For IPv6-only subnets, an instance DNS name must be based on the instance ID. For dual-stack and IPv4-only subnets, you can specify whether DNS names use the instance IPv4 address or the instance ID. Valid values: ip-name, resource-name."
+  type        = string
+  default     = "ip-name"
+
+  validation {
+    condition     = contains(["ip-name", "resource-name"], var.public_subnets_private_dns_hostname_type_on_launch)
+    error_message = "Only ip-name or resource-name are valid values for the var.public_subnets_private_dns_hostname_type_on_launch"
+  }
 }
 
 variable "public_subnets_additional_tags" {
-  type        = map(string)
   description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  type        = map(string)
   default     = {}
 }
 
+##############
+# NAT Gateways
+##############
 variable "single_nat" {
   type        = bool
   description = "Use single NAT Gateway"
   default     = false
 }
 
-#------------------------------------------------------------------------------
+#################
 # Private Subnets
-#------------------------------------------------------------------------------
+#################
 variable "private_subnets" {
   type = map(object({
-    availability_zone = string                # Availability Zone for the subnet.
-    cidr_block        = string                # The IPv4 CIDR block for the subnet.
-    enable_flow_log   = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
+    availability_zone               = string                # Availability Zone for the subnet.
+    assign_ipv6_address_on_creation = optional(bool, false) # (Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false
+    cidr_block                      = optional(string)      # The IPv4 CIDR block for the subnet.
+    customer_owned_ipv4_pool        = optional(string)      # The customer owned IPv4 address pool. Typically used with the map_customer_owned_ip_on_launch argument. The outpost_arn argument must be specified when configured.
+    enable_flow_log                 = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
+    ipv6_cidr_block                 = optional(string)      # The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length. If the existing IPv6 subnet was created with assign_ipv6_address_on_creation = true, changing this value will force resource recreation.
+    ipv6_native                     = optional(bool, false) # Indicates whether to create an IPv6-only subnet. Default: false.
+    ipv4_ipam_pool_id               = optional(string)      # ID of an IPv4 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv4_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv4_ipam_pool_id.
+    ipv6_ipam_pool_id               = optional(string)      # ID of an IPv6 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv6_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv6_ipam_pool_id. Valid values are from 44 to 64 in increments of 4.
+    map_customer_owned_ip_on_launch = optional(bool, false) # Specify true to indicate that network interfaces created in the subnet should be assigned a customer owned IP address. The customer_owned_ipv4_pool and outpost_arn arguments must be specified when set to true. Default is false.
+    outpost_arn                     = optional(string)      # The Amazon Resource Name (ARN) of the Outpost.
   }))
   description = "(Optional) Map of objects containing the definition for each private subnet"
   default     = {}
+
+  # Every subnet must define IPv4
+  validation {
+    condition = alltrue([
+      for _, s in var.private_subnets : (
+        s.cidr_block != null ||
+        (s.ipv4_ipam_pool_id != null && s.ipv4_netmask_length != null)
+      )
+    ])
+    error_message = "Each private subnet must define either `cidr_block`, or both `ipv4_ipam_pool_id` and `ipv4_netmask_length`."
+  }
+
+  # If IPv6 is used, it must be valid
+  validation {
+    condition = alltrue([
+      for _, s in var.private_subnets : (
+        !(s.assign_ipv6_address_on_creation || s.ipv6_native) ||
+        (
+          s.ipv6_cidr_block != null ||
+          (s.ipv6_ipam_pool_id != null && s.ipv6_netmask_length != null)
+        )
+      )
+    ])
+    error_message = "If IPv6 is requested (`assign_ipv6_address_on_creation` or `ipv6_native`), each subnet must provide either `ipv6_cidr_block`, or both `ipv6_ipam_pool_id` and `ipv6_netmask_length`."
+  }
+
+  # Customer-owned IP mapping dependencies
+  validation {
+    condition = alltrue([
+      for _, s in var.private_subnets : (
+        !s.map_customer_owned_ip_on_launch ||
+        (s.customer_owned_ipv4_pool != null && s.outpost_arn != null)
+      )
+    ])
+    error_message = "If `map_customer_owned_ip_on_launch` is true, then `customer_owned_ipv4_pool` and `outpost_arn` must both be provided."
+  }
+}
+
+variable "private_subnets_enable_dns64" {
+  description = "(Optional) Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations. Default: false."
+  type        = bool
+  default     = false
 }
 
 variable "private_subnets_enable_resource_name_dns_aaaa_record_on_launch" {
-  type        = bool
   description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records. Default: false."
+  type        = bool
   default     = false
 }
 
 variable "private_subnets_enable_resource_name_dns_a_record_on_launch" {
-  type        = bool
   description = "(Optional) Indicates whether to respond to DNS queries for instance hostnames with DNS A records. Default: false."
+  type        = bool
   default     = false
 }
 
+variable "private_subnets_private_dns_hostname_type_on_launch" {
+  description = "(Optional) The type of hostnames to assign to instances in the subnet at launch. For IPv6-only subnets, an instance DNS name must be based on the instance ID. For dual-stack and IPv4-only subnets, you can specify whether DNS names use the instance IPv4 address or the instance ID. Valid values: ip-name, resource-name."
+  type        = string
+  default     = "ip-name"
+
+  validation {
+    condition     = contains(["ip-name", "resource-name"], var.private_subnets_private_dns_hostname_type_on_launch)
+    error_message = "Only ip-name or resource-name are valid values for the var.private_subnets_private_dns_hostname_type_on_launch"
+  }
+}
+
 variable "private_subnets_additional_tags" {
-  type        = map(string)
   description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  type        = map(string)
   default     = {}
 }
 

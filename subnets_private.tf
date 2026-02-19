@@ -1,23 +1,36 @@
-#------------------------------------------------------------------------------
+#################
 # Private Subnets
-#------------------------------------------------------------------------------
-
-resource "aws_subnet" "private" {
+#################
+resource "aws_subnet" "private" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet
   for_each = var.private_subnets
 
-  availability_zone = each.value.availability_zone
-  cidr_block        = each.value.cidr_block
+  vpc_id = aws_vpc.vpc.id
 
-  vpc_id                                         = aws_vpc.vpc.id
+  assign_ipv6_address_on_creation = each.value.assign_ipv6_address_on_creation
+  availability_zone               = each.value.availability_zone
+  cidr_block                      = each.value.cidr_block
+  customer_owned_ipv4_pool        = each.value.customer_owned_ipv4_pool
+  ipv6_cidr_block                 = each.value.ipv6_cidr_block
+  ipv6_native                     = each.value.ipv6_native
+  ipv4_ipam_pool_id               = each.value.ipv4_ipam_pool_id
+  ipv4_netmask_length             = each.value.ipv4_netmask_length
+  ipv6_ipam_pool_id               = each.value.ipv6_ipam_pool_id
+  ipv6_netmask_length             = each.value.ipv6_netmask_length
+  map_customer_owned_ip_on_launch = each.value.map_customer_owned_ip_on_launch
+  outpost_arn                     = each.value.outpost_arn
+
+  enable_dns64                                   = var.private_subnets_enable_dns64
   enable_resource_name_dns_aaaa_record_on_launch = var.private_subnets_enable_resource_name_dns_aaaa_record_on_launch
   enable_resource_name_dns_a_record_on_launch    = var.private_subnets_enable_resource_name_dns_a_record_on_launch
   map_public_ip_on_launch                        = false
+  private_dns_hostname_type_on_launch            = var.private_subnets_private_dns_hostname_type_on_launch
+
   tags = merge(
     var.additional_tags,
+    var.private_subnets_additional_tags,
     {
-      Name = each.key
-    },
-    var.private_subnets_additional_tags
+      Name = format("%s-%s", var.name_prefix, each.key)
+    }
   )
 }
 
