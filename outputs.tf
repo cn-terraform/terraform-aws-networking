@@ -29,7 +29,7 @@ output "public_subnets_route_tables" {
 
 output "nat_gws" {
   description = "Values from the generated NAT gateways"
-  value       = aws_nat_gateway.nat
+  value       = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0] : aws_nat_gateway.zonal
 }
 
 #######################

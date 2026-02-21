@@ -213,10 +213,38 @@ variable "public_subnets_additional_tags" {
 ##############
 # NAT Gateways
 ##############
-variable "single_nat" {
-  type        = bool
-  description = "Use single NAT Gateway"
-  default     = false
+variable "nat_gateway_availability_mode" {
+  description = "(Optional) Specifies whether to create a zonal (single-AZ) or regional (multi-AZ) NAT gateway. Valid values are zonal and regional. Defaults to zonal."
+  type        = string
+  default     = "zonal"
+
+  validation {
+    condition     = contains(["regional", "zonal"], var.nat_gateway_availability_mode)
+    error_message = "The value for var.nat_gateway_availability_mode can be `regional` or `zonal`"
+  }
+}
+
+variable "nat_gateway_availability_zones" {
+  description = "List of availability zones where a NAT gateway will be operating. If configured as `zonal`, one NAT GW will be created on public subnets deployed in the AZs listed here. If set up as `regional`, this is used to decide on how many AZs it will be expanding"
+  type        = set(string)
+  default     = []
+}
+
+variable "nat_gateway_connectivity_type" {
+  description = "(Optional) Connectivity type for the NAT Gateway. Valid values are private and public. When availability_mode is set to regional, this must be set to public. Defaults to public."
+  type        = string
+  default     = "public"
+
+  validation {
+    condition     = contains(["private", "public"], var.nat_gateway_connectivity_type)
+    error_message = "var.nat_gateway_connectivity_type must be one of `private` or `public`"
+  }
+}
+
+variable "nat_gateway_additional_tags" {
+  description = "(Optional) A map of tags to assign to the resource. If configured with a provider default_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level."
+  type        = map(string)
+  default     = {}
 }
 
 #################

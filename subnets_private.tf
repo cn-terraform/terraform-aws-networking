@@ -64,36 +64,34 @@ resource "aws_flow_log" "private_subnet_flow_log" { # https://registry.terraform
   )
 }
 
-#------------------------------------------------------------------------------
+##############
 # Route tables
-#------------------------------------------------------------------------------
-
-# Route table
-resource "aws_route_table" "private" {
+##############
+resource "aws_route_table" "private" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
   for_each = aws_subnet.private
 
   vpc_id = aws_vpc.vpc.id
   tags = merge(
     var.additional_tags,
     {
-      Name = format("private-rt-%s", each.key)
+      Name = format("%s-private-rt-%s", var.name_prefix, each.key)
     },
   )
 }
 
 # Route to access internet
-resource "aws_route" "private_internet_route" {
+resource "aws_route" "private_internet_route" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route
   for_each = aws_route_table.private
 
   route_table_id         = each.value.id
   destination_cidr_block = "0.0.0.0/0"
 
-  # Zipmap to create map between public and private ids
-  nat_gateway_id = aws_nat_gateway.nat[zipmap(keys(aws_subnet.private), keys(aws_subnet.public))[each.key]].id
+  # When NAT GW is zonal, zipmap to create map between public and private ids
+  nat_gateway_id = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0].id : aws_nat_gateway.zonal[zipmap(keys(aws_subnet.private), keys(aws_subnet.public))[each.key]].id
 }
 
 # Association of Route Table to Subnets
-resource "aws_route_table_association" "private" {
+resource "aws_route_table_association" "private" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association
   for_each = aws_subnet.private
 
   subnet_id      = each.value.id

@@ -64,57 +64,83 @@ resource "aws_flow_log" "public_subnet_flow_log" { # https://registry.terraform.
   )
 }
 
-#------------------------------------------------------------------------------
-# NAT
-#------------------------------------------------------------------------------
-# Elastic IPs for NAT
-resource "aws_eip" "nat" {
-  for_each = var.single_nat ? { keys(aws_subnet.public)[0] = values(aws_subnet.public)[0] } : aws_subnet.public
+#############
+# NAT Gateway
+#############
+# Elastic IPs
+resource "aws_eip" "nat" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip
+  for_each = local.nat_gateway_availability_zones
 
   domain = "vpc"
 
   tags = merge(
     var.additional_tags,
     {
-      Name = format("nat-eip-%s", each.key)
+      Name = format("%s-nat-eip-%s", var.name_prefix, each.key)
     },
   )
 }
 
-# NAT gateways
-resource "aws_nat_gateway" "nat" {
-  for_each = var.single_nat ? { keys(aws_subnet.public)[0] = values(aws_subnet.public)[0] } : aws_subnet.public
+# Regional NAT gateway
+resource "aws_nat_gateway" "regional" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway
+  count = var.nat_gateway_availability_mode == "regional" ? 1 : 0
 
-  allocation_id = aws_eip.nat[each.key].id
-  subnet_id     = each.value.id
+  availability_mode = "regional"
+  connectivity_type = var.nat_gateway_connectivity_type
+  vpc_id            = aws_vpc.vpc.id
+
+  dynamic "availability_zone_address" {
+    for_each = local.nat_gateway_availability_zones
+    content {
+      allocation_ids    = [aws_eip.nat[availability_zone_address.value]]
+      availability_zone = availability_zone_address.value
+    }
+  }
 
   tags = merge(
     var.additional_tags,
+    var.nat_gateway_additional_tags,
     {
-      Name = format("nat-gw-%s", each.key)
-    },
+      Name = format("%s-nat-gw", var.name_prefix)
+    }
   )
 }
 
-#------------------------------------------------------------------------------
-# Route tables
-#------------------------------------------------------------------------------
+# Zonal NAT gateways
+resource "aws_nat_gateway" "zonal" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway
+  for_each = var.nat_gateway_availability_mode == "zonal" ? local.nat_gateway_availability_zones : []
 
-# Route table
-resource "aws_route_table" "public" {
+  allocation_id     = aws_eip.nat[each.key].id
+  availability_mode = "zonal"
+  connectivity_type = var.nat_gateway_connectivity_type
+  subnet_id         = aws_subnet.public[each.key].id
+
+  tags = merge(
+    var.additional_tags,
+    var.nat_gateway_additional_tags,
+    {
+      Name = format("%s-nat-gw-%s", var.name_prefix, each.key)
+    }
+  )
+}
+
+##############
+# Route tables
+##############
+resource "aws_route_table" "public" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
   for_each = aws_subnet.public
 
   vpc_id = aws_vpc.vpc.id
   tags = merge(
     var.additional_tags,
     {
-      Name = format("public-rt-%s", each.key)
+      Name = format("%s-public-rt-%s", var.name_prefix, each.key)
     },
   )
 }
 
 # Route to access internet
-resource "aws_route" "public_internet" {
+resource "aws_route" "public_internet" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route
   for_each = aws_route_table.public
 
   route_table_id         = each.value.id
@@ -123,7 +149,7 @@ resource "aws_route" "public_internet" {
 }
 
 # Association of Route Table to Subnets
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "public" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association
   for_each = aws_subnet.public
 
   subnet_id      = each.value.id
