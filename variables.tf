@@ -118,16 +118,16 @@ variable "public_subnets" {
     availability_zone               = string                # Availability Zone for the subnet.
     assign_ipv6_address_on_creation = optional(bool, false) # (Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false
     cidr_block                      = optional(string)      # The IPv4 CIDR block for the subnet.
-    customer_owned_ipv4_pool        = optional(string)      # The customer owned IPv4 address pool. Typically used with the map_customer_owned_ip_on_launch argument. The outpost_arn argument must be specified when configured.
-    enable_flow_log                 = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
-    ipv6_cidr_block                 = optional(string)      # The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length. If the existing IPv6 subnet was created with assign_ipv6_address_on_creation = true, changing this value will force resource recreation.
-    ipv6_native                     = optional(bool, false) # Indicates whether to create an IPv6-only subnet. Default: false.
-    ipv4_ipam_pool_id               = optional(string)      # ID of an IPv4 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
-    ipv4_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv4_ipam_pool_id.
-    ipv6_ipam_pool_id               = optional(string)      # ID of an IPv6 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
-    ipv6_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv6_ipam_pool_id. Valid values are from 44 to 64 in increments of 4.
-    map_customer_owned_ip_on_launch = optional(bool, false) # Specify true to indicate that network interfaces created in the subnet should be assigned a customer owned IP address. The customer_owned_ipv4_pool and outpost_arn arguments must be specified when set to true. Default is false.
-    outpost_arn                     = optional(string)      # The Amazon Resource Name (ARN) of the Outpost.
+    # customer_owned_ipv4_pool        = optional(string)      # The customer owned IPv4 address pool. Typically used with the map_customer_owned_ip_on_launch argument. The outpost_arn argument must be specified when configured.
+    enable_flow_log     = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
+    ipv6_cidr_block     = optional(string)      # The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length. If the existing IPv6 subnet was created with assign_ipv6_address_on_creation = true, changing this value will force resource recreation.
+    ipv6_native         = optional(bool, false) # Indicates whether to create an IPv6-only subnet. Default: false.
+    ipv4_ipam_pool_id   = optional(string)      # ID of an IPv4 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv4_netmask_length = optional(number)      # Netmask. Requires specifying a ipv4_ipam_pool_id.
+    ipv6_ipam_pool_id   = optional(string)      # ID of an IPv6 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv6_netmask_length = optional(number)      # Netmask. Requires specifying a ipv6_ipam_pool_id. Valid values are from 44 to 64 in increments of 4.
+    # map_customer_owned_ip_on_launch = optional(bool, false) # Specify true to indicate that network interfaces created in the subnet should be assigned a customer owned IP address. The customer_owned_ipv4_pool and outpost_arn arguments must be specified when set to true. Default is false.
+    outpost_arn = optional(string) # The Amazon Resource Name (ARN) of the Outpost.
   }))
   description = "(Optional) Map of objects containing the definition for each public subnet"
   default     = {}
@@ -158,15 +158,15 @@ variable "public_subnets" {
   }
 
   # Customer-owned IP mapping dependencies
-  validation {
-    condition = alltrue([
-      for _, s in var.public_subnets : (
-        !s.map_customer_owned_ip_on_launch ||
-        (s.customer_owned_ipv4_pool != null && s.outpost_arn != null)
-      )
-    ])
-    error_message = "If `map_customer_owned_ip_on_launch` is true, then `customer_owned_ipv4_pool` and `outpost_arn` must both be provided."
-  }
+  # validation {
+  #   condition = alltrue([
+  #     for _, s in var.public_subnets : (
+  #       !s.map_customer_owned_ip_on_launch ||
+  #       (s.customer_owned_ipv4_pool != null && s.outpost_arn != null)
+  #     )
+  #   ])
+  #   error_message = "If `map_customer_owned_ip_on_launch` is true, then `customer_owned_ipv4_pool` and `outpost_arn` must both be provided."
+  # }
 }
 
 variable "public_subnets_enable_dns64" {
@@ -225,9 +225,9 @@ variable "nat_gateway_availability_mode" {
 }
 
 variable "nat_gateway_availability_zones" {
-  description = "List of availability zones where a NAT gateway will be operating. If configured as `zonal`, one NAT GW will be created on public subnets deployed in the AZs listed here. If set up as `regional`, this is used to decide on how many AZs it will be expanding"
+  description = "List of availability zones where a NAT gateway will be operating. If configured as `zonal`, one NAT GW will be created on public subnets deployed in the AZs listed here. If set up as `regional`, this is used to decide on how many AZs it will be expanding. If `null`, the AZs will match those where a public subnets are created. If [], no NAT Gw will be created"
   type        = set(string)
-  default     = []
+  default     = null
 }
 
 variable "nat_gateway_connectivity_type" {
@@ -255,16 +255,16 @@ variable "private_subnets" {
     availability_zone               = string                # Availability Zone for the subnet.
     assign_ipv6_address_on_creation = optional(bool, false) # (Optional) Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is false
     cidr_block                      = optional(string)      # The IPv4 CIDR block for the subnet.
-    customer_owned_ipv4_pool        = optional(string)      # The customer owned IPv4 address pool. Typically used with the map_customer_owned_ip_on_launch argument. The outpost_arn argument must be specified when configured.
-    enable_flow_log                 = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
-    ipv6_cidr_block                 = optional(string)      # The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length. If the existing IPv6 subnet was created with assign_ipv6_address_on_creation = true, changing this value will force resource recreation.
-    ipv6_native                     = optional(bool, false) # Indicates whether to create an IPv6-only subnet. Default: false.
-    ipv4_ipam_pool_id               = optional(string)      # ID of an IPv4 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
-    ipv4_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv4_ipam_pool_id.
-    ipv6_ipam_pool_id               = optional(string)      # ID of an IPv6 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
-    ipv6_netmask_length             = optional(number)      # Netmask. Requires specifying a ipv6_ipam_pool_id. Valid values are from 44 to 64 in increments of 4.
-    map_customer_owned_ip_on_launch = optional(bool, false) # Specify true to indicate that network interfaces created in the subnet should be assigned a customer owned IP address. The customer_owned_ipv4_pool and outpost_arn arguments must be specified when set to true. Default is false.
-    outpost_arn                     = optional(string)      # The Amazon Resource Name (ARN) of the Outpost.
+    # customer_owned_ipv4_pool        = optional(string)      # The customer owned IPv4 address pool. Typically used with the map_customer_owned_ip_on_launch argument. The outpost_arn argument must be specified when configured.
+    enable_flow_log     = optional(bool, false) # (Optional) Whether to create a flow log for the subnet. Default is false. If enabled, some of the variables starting with `flow_log` need to be configured.
+    ipv6_cidr_block     = optional(string)      # The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length. If the existing IPv6 subnet was created with assign_ipv6_address_on_creation = true, changing this value will force resource recreation.
+    ipv6_native         = optional(bool, false) # Indicates whether to create an IPv6-only subnet. Default: false.
+    ipv4_ipam_pool_id   = optional(string)      # ID of an IPv4 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv4_netmask_length = optional(number)      # Netmask. Requires specifying a ipv4_ipam_pool_id.
+    ipv6_ipam_pool_id   = optional(string)      # ID of an IPv6 VPC Resource Planning IPAM Pool. The CIDR of this pool is used to allocate the CIDR for the subnet.
+    ipv6_netmask_length = optional(number)      # Netmask. Requires specifying a ipv6_ipam_pool_id. Valid values are from 44 to 64 in increments of 4.
+    # map_customer_owned_ip_on_launch = optional(bool, false) # Specify true to indicate that network interfaces created in the subnet should be assigned a customer owned IP address. The customer_owned_ipv4_pool and outpost_arn arguments must be specified when set to true. Default is false.
+    outpost_arn = optional(string) # The Amazon Resource Name (ARN) of the Outpost.
   }))
   description = "(Optional) Map of objects containing the definition for each private subnet"
   default     = {}
@@ -295,15 +295,15 @@ variable "private_subnets" {
   }
 
   # Customer-owned IP mapping dependencies
-  validation {
-    condition = alltrue([
-      for _, s in var.private_subnets : (
-        !s.map_customer_owned_ip_on_launch ||
-        (s.customer_owned_ipv4_pool != null && s.outpost_arn != null)
-      )
-    ])
-    error_message = "If `map_customer_owned_ip_on_launch` is true, then `customer_owned_ipv4_pool` and `outpost_arn` must both be provided."
-  }
+  # validation {
+  #   condition = alltrue([
+  #     for _, s in var.private_subnets : (
+  #       !s.map_customer_owned_ip_on_launch ||
+  #       (s.customer_owned_ipv4_pool != null && s.outpost_arn != null)
+  #     )
+  #   ])
+  #   error_message = "If `map_customer_owned_ip_on_launch` is true, then `customer_owned_ipv4_pool` and `outpost_arn` must both be provided."
+  # }
 }
 
 variable "private_subnets_enable_dns64" {

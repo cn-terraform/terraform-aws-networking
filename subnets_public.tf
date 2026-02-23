@@ -9,15 +9,15 @@ resource "aws_subnet" "public" { # https://registry.terraform.io/providers/hashi
   assign_ipv6_address_on_creation = each.value.assign_ipv6_address_on_creation
   availability_zone               = each.value.availability_zone
   cidr_block                      = each.value.cidr_block
-  customer_owned_ipv4_pool        = each.value.customer_owned_ipv4_pool
-  ipv6_cidr_block                 = each.value.ipv6_cidr_block
-  ipv6_native                     = each.value.ipv6_native
-  ipv4_ipam_pool_id               = each.value.ipv4_ipam_pool_id
-  ipv4_netmask_length             = each.value.ipv4_netmask_length
-  ipv6_ipam_pool_id               = each.value.ipv6_ipam_pool_id
-  ipv6_netmask_length             = each.value.ipv6_netmask_length
-  map_customer_owned_ip_on_launch = each.value.map_customer_owned_ip_on_launch
-  outpost_arn                     = each.value.outpost_arn
+  # customer_owned_ipv4_pool        = each.value.customer_owned_ipv4_pool
+  ipv6_cidr_block     = each.value.ipv6_cidr_block
+  ipv6_native         = each.value.ipv6_native
+  ipv4_ipam_pool_id   = each.value.ipv4_ipam_pool_id
+  ipv4_netmask_length = each.value.ipv4_netmask_length
+  ipv6_ipam_pool_id   = each.value.ipv6_ipam_pool_id
+  ipv6_netmask_length = each.value.ipv6_netmask_length
+  # map_customer_owned_ip_on_launch = each.value.map_customer_owned_ip_on_launch
+  outpost_arn = each.value.outpost_arn
 
   enable_dns64                                   = var.public_subnets_enable_dns64
   enable_resource_name_dns_aaaa_record_on_launch = var.public_subnets_enable_resource_name_dns_aaaa_record_on_launch
@@ -92,7 +92,7 @@ resource "aws_nat_gateway" "regional" { # https://registry.terraform.io/provider
   dynamic "availability_zone_address" {
     for_each = local.nat_gateway_availability_zones
     content {
-      allocation_ids    = [aws_eip.nat[availability_zone_address.value]]
+      allocation_ids    = [aws_eip.nat[availability_zone_address.key].id]
       availability_zone = availability_zone_address.value
     }
   }
@@ -108,7 +108,7 @@ resource "aws_nat_gateway" "regional" { # https://registry.terraform.io/provider
 
 # Zonal NAT gateways
 resource "aws_nat_gateway" "zonal" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway
-  for_each = var.nat_gateway_availability_mode == "zonal" ? local.nat_gateway_availability_zones : []
+  for_each = var.nat_gateway_availability_mode == "zonal" ? local.nat_gateway_availability_zones : {}
 
   allocation_id     = aws_eip.nat[each.key].id
   availability_mode = "zonal"

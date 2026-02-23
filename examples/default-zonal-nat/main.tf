@@ -3,7 +3,7 @@ module "base-network" {
   source = "../../"
 
   # General settings
-  name_prefix = "basic-usage"
+  name_prefix = "single-az-zonal-nat"
   additional_tags = {
     global-additional-tag1 = "global-value1",
     global-additional-tag2 = "global-value2",
@@ -34,32 +34,47 @@ module "base-network" {
     first-public = {
       availability_zone               = "us-east-1a"
       assign_ipv6_address_on_creation = false
-      cidr_block                      = "192.168.0.0/19"
-      customer_owned_ipv4_pool        = null
-      enable_flow_log                 = false
-      ipv6_cidr_block                 = null
-      ipv6_native                     = false
-      ipv4_ipam_pool_id               = null
-      ipv4_netmask_length             = null
-      ipv6_ipam_pool_id               = null
-      ipv6_netmask_length             = null
-      map_customer_owned_ip_on_launch = false
-      outpost_arn                     = null
+      cidr_block                      = "192.168.0.0/24"
+      # customer_owned_ipv4_pool        = null
+      enable_flow_log     = false
+      ipv6_cidr_block     = null
+      ipv6_native         = false
+      ipv4_ipam_pool_id   = null
+      ipv4_netmask_length = null
+      ipv6_ipam_pool_id   = null
+      ipv6_netmask_length = null
+      # map_customer_owned_ip_on_launch = false
+      outpost_arn = null
     }
     second-public = {
       availability_zone               = "us-east-1b"
       assign_ipv6_address_on_creation = false
-      cidr_block                      = "192.168.32.0/19"
-      customer_owned_ipv4_pool        = null
-      enable_flow_log                 = false
-      ipv6_cidr_block                 = null
-      ipv6_native                     = false
-      ipv4_ipam_pool_id               = null
-      ipv4_netmask_length             = null
-      ipv6_ipam_pool_id               = null
-      ipv6_netmask_length             = null
-      map_customer_owned_ip_on_launch = false
-      outpost_arn                     = null
+      cidr_block                      = "192.168.1.0/24"
+      # customer_owned_ipv4_pool        = null
+      enable_flow_log     = false
+      ipv6_cidr_block     = null
+      ipv6_native         = false
+      ipv4_ipam_pool_id   = null
+      ipv4_netmask_length = null
+      ipv6_ipam_pool_id   = null
+      ipv6_netmask_length = null
+      # map_customer_owned_ip_on_launch = false
+      outpost_arn = null
+    }
+    third-public = {
+      availability_zone               = "us-east-1c"
+      assign_ipv6_address_on_creation = false
+      cidr_block                      = "192.168.2.0/24"
+      # customer_owned_ipv4_pool        = null
+      enable_flow_log     = false
+      ipv6_cidr_block     = null
+      ipv6_native         = false
+      ipv4_ipam_pool_id   = null
+      ipv4_netmask_length = null
+      ipv6_ipam_pool_id   = null
+      ipv6_netmask_length = null
+      # map_customer_owned_ip_on_launch = false
+      outpost_arn = null
     }
   }
 
@@ -75,7 +90,7 @@ module "base-network" {
 
   # NAT Gateways
   nat_gateway_availability_mode  = "zonal"
-  nat_gateway_availability_zones = []
+  nat_gateway_availability_zones = null
   nat_gateway_connectivity_type  = "public"
   nat_gateway_additional_tags = {
     nat-gateway-additional-tag1 = "nat-gateway-value1",
@@ -87,32 +102,32 @@ module "base-network" {
     first-private = {
       availability_zone               = "us-east-1a"
       assign_ipv6_address_on_creation = false
-      cidr_block                      = "192.168.128.0/19"
-      customer_owned_ipv4_pool        = null
-      enable_flow_log                 = false
-      ipv6_cidr_block                 = null
-      ipv6_native                     = false
-      ipv4_ipam_pool_id               = null
-      ipv4_netmask_length             = null
-      ipv6_ipam_pool_id               = null
-      ipv6_netmask_length             = null
-      map_customer_owned_ip_on_launch = false
-      outpost_arn                     = null
+      cidr_block                      = "192.168.128.0/24"
+      # customer_owned_ipv4_pool        = null
+      enable_flow_log     = false
+      ipv6_cidr_block     = null
+      ipv6_native         = false
+      ipv4_ipam_pool_id   = null
+      ipv4_netmask_length = null
+      ipv6_ipam_pool_id   = null
+      ipv6_netmask_length = null
+      # map_customer_owned_ip_on_launch = false
+      outpost_arn = null
     }
     second-private = {
       availability_zone               = "us-east-1b"
       assign_ipv6_address_on_creation = false
-      cidr_block                      = "192.168.160.0/19"
-      customer_owned_ipv4_pool        = null
-      enable_flow_log                 = false
-      ipv6_cidr_block                 = null
-      ipv6_native                     = false
-      ipv4_ipam_pool_id               = null
-      ipv4_netmask_length             = null
-      ipv6_ipam_pool_id               = null
-      ipv6_netmask_length             = null
-      map_customer_owned_ip_on_launch = false
-      outpost_arn                     = null
+      cidr_block                      = "192.168.129.0/24"
+      # customer_owned_ipv4_pool        = null
+      enable_flow_log     = false
+      ipv6_cidr_block     = null
+      ipv6_native         = false
+      ipv4_ipam_pool_id   = null
+      ipv4_netmask_length = null
+      ipv6_ipam_pool_id   = null
+      ipv6_netmask_length = null
+      # map_customer_owned_ip_on_launch = false
+      outpost_arn = null
     }
   }
 

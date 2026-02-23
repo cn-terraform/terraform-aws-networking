@@ -22,15 +22,15 @@ output "public_subnets" {
   value       = aws_subnet.public
 }
 
-output "public_subnets_route_tables" {
-  description = "Values from the generated route tables for the public subnets"
-  value       = aws_route_table.public
-}
+# output "public_subnets_route_tables" {
+#   description = "Values from the generated route tables for the public subnets"
+#   value       = aws_route_table.public
+# }
 
-output "nat_gws" {
-  description = "Values from the generated NAT gateways"
-  value       = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0] : aws_nat_gateway.zonal
-}
+# output "nat_gws" {
+#   description = "Values from the generated NAT gateways"
+#   value       = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0] : aws_nat_gateway.zonal
+# }
 
 #######################
 # AWS Subnets - Private
@@ -40,7 +40,7 @@ output "private_subnets" {
   value       = aws_subnet.private
 }
 
-output "private_subnets_route_tables" {
-  description = "Values from the generated route tables for the private subnets"
-  value       = aws_route_table.private
-}
+# output "private_subnets_route_tables" {
+#   description = "Values from the generated route tables for the private subnets"
+#   value       = aws_route_table.private
+# }
