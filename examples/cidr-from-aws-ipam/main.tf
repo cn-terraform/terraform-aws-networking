@@ -17,12 +17,24 @@ resource "aws_vpc_ipam_pool_cidr" "test" {
   cidr         = "172.20.0.0/16"
 }
 
+# trivy:ignore:AWS-0178 (MEDIUM): VPC does not have VPC Flow Logs enabled.
 module "base-network" {
-  source              = "../../"
-  ipv4_ipam_pool_id   = aws_vpc_ipam_pool.test.id
-  ipv4_netmask_length = 28
-  vpc_additional_tags = {
-    tag1 = "tag1",
-    tag2 = "tag2",
+  source = "../../"
+
+  # General settings
+  name_prefix = "cidr-from-aws-ipam"
+  additional_tags = {
+    global-additional-tag1 = "global-value1",
+    global-additional-tag2 = "global-value2",
   }
+
+  # VPC
+  vpc_ipv4_ipam_pool_id   = aws_vpc_ipam_pool.test.id
+  vpc_ipv4_netmask_length = 28
+  vpc_additional_tags = {
+    vpc-additional-tag1 = "vpc-value1",
+    vpc-additional-tag2 = "vpc-value2",
+  }
+  vpc_create_internet_gateway = false
+  vpc_enable_flow_log         = false
 }
