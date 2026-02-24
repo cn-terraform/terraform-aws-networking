@@ -81,13 +81,13 @@ resource "aws_route_table" "private" { # https://registry.terraform.io/providers
 
 # Route to access internet
 resource "aws_route" "private_internet_route" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route
-  for_each = aws_route_table.private
+  for_each = try(length(var.nat_gateway_availability_zones), length(aws_subnet.private)) == 0 ? {} : aws_route_table.private
 
   route_table_id         = each.value.id
   destination_cidr_block = "0.0.0.0/0"
 
   # When NAT GW is zonal, zipmap to create map between public and private ids
-  nat_gateway_id = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0].id : aws_nat_gateway.zonal[local.private_subnet_to_nat_routes[each.key]].id
+  nat_gateway_id = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0].id : aws_nat_gateway.zonal[local.private_to_public_routes[each.key]].id
 }
 
 # Association of Route Table to Subnets
