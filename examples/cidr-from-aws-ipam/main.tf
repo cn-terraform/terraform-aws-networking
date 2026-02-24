@@ -21,12 +21,21 @@ resource "aws_vpc_ipam_pool_cidr" "test" {
 module "base-network" {
   source = "../../"
 
-  name_prefix             = "cidr-from-aws-ipam"
+  # General settings
+  name_prefix = "cidr-from-aws-ipam"
+  additional_tags = {
+    global-additional-tag1 = "global-value1",
+    global-additional-tag2 = "global-value2",
+  }
+
+  # VPC
   vpc_ipv4_ipam_pool_id   = aws_vpc_ipam_pool.test.id
   vpc_ipv4_netmask_length = 28
-
   vpc_additional_tags = {
-    tag1 = "tag1",
-    tag2 = "tag2"
+    vpc-additional-tag1 = "vpc-value1",
+    vpc-additional-tag2 = "vpc-value2",
   }
+  vpc_create_internet_gateway = false
+  vpc_enable_flow_log         = false
+
 }
