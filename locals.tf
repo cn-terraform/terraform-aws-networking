@@ -13,6 +13,6 @@ locals {
 
   # Pick a candidate for a route from a private subnet to a NAT Gw in the same AZ or fallback to round-robin if none
   private_to_nat_routes = {
-    for i, private_subnet_key in local.sorted_private_subnet_keys : private_subnet_key => length(local.private_to_nat_route_candidates[private_subnet_key]) > 0 ? local.private_to_nat_route_candidates[private_subnet_key][i % length(local.private_to_nat_route_candidates[private_subnet_key])] : local.sorted_nat_keys[i % length(local.sorted_nat_keys)]
+    for i, private_subnet_key in local.sorted_private_subnet_keys : private_subnet_key => length(local.sorted_nat_keys) == 0 ? null : length(local.private_to_nat_route_candidates[private_subnet_key]) > 0 ? local.private_to_nat_route_candidates[private_subnet_key][i % length(local.private_to_nat_route_candidates[private_subnet_key])] : local.sorted_nat_keys[i % length(local.sorted_nat_keys)]
   }
 }
