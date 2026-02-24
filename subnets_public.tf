@@ -141,7 +141,7 @@ resource "aws_route_table" "public" { # https://registry.terraform.io/providers/
 
 # Route to access internet
 resource "aws_route" "public_internet" { # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route
-  for_each = aws_route_table.public
+  for_each = var.vpc_create_internet_gateway ? aws_route_table.public : {}
 
   route_table_id         = each.value.id
   destination_cidr_block = "0.0.0.0/0"

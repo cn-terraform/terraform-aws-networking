@@ -37,5 +37,4 @@ module "base-network" {
   }
   vpc_create_internet_gateway = false
   vpc_enable_flow_log         = false
-
 }
