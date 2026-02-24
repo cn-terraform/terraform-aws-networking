@@ -87,7 +87,7 @@ resource "aws_route" "private_internet_route" { # https://registry.terraform.io/
   destination_cidr_block = "0.0.0.0/0"
 
   # When NAT GW is zonal, zipmap to create map between public and private ids
-  nat_gateway_id = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0].id : aws_nat_gateway.zonal[local.private_to_public_routes[each.key]].id
+  nat_gateway_id = var.nat_gateway_availability_mode == "regional" ? aws_nat_gateway.regional[0].id : aws_nat_gateway.zonal[local.private_to_nat_routes[each.key]].id
 }
 
 # Association of Route Table to Subnets
