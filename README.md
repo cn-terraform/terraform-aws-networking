@@ -37,15 +37,15 @@ pre-commit run --all-files
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~>6 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.32.1 |
+| ---- | ------- |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~>6 |
 
 ## Modules
 
@@ -54,7 +54,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_eip.nat](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
 | [aws_flow_log.private_subnet_flow_log](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/flow_log) | resource |
 | [aws_flow_log.public_subnet_flow_log](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/flow_log) | resource |
@@ -75,7 +75,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_additional_tags"></a> [additional\_tags](#input\_additional\_tags) | (Optional) A map of tags to assign to all the resources. If configured with a provider default\_tags configuration block present, tags with matching keys will overwrite those defined at the provider-level. | `map(string)` | `{}` | no |
 | <a name="input_flow_log_additional_tags"></a> [flow\_log\_additional\_tags](#input\_flow\_log\_additional\_tags) | (Optional) Additional tags to be added to the flow log resources. | `map(string)` | `{}` | no |
 | <a name="input_flow_log_deliver_cross_account_role"></a> [flow\_log\_deliver\_cross\_account\_role](#input\_flow\_log\_deliver\_cross\_account\_role) | (Optional) ARN of the IAM role in the destination account used for cross-account delivery of flow logs. This is required if log\_destination\_type is cloud-watch-logs or s3 and the destination is in a different account. Corresponds to DeliverCrossAccountRole in the AWS API. | `string` | `null` | no |
@@ -123,7 +123,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_internet_gateway_id"></a> [internet\_gateway\_id](#output\_internet\_gateway\_id) | Values from the generated Internet Gateway in case it was created. |
 | <a name="output_private_subnets"></a> [private\_subnets](#output\_private\_subnets) | Values from the generated private subnets |
 | <a name="output_public_subnets"></a> [public\_subnets](#output\_public\_subnets) | Values from the generated public subnets |
